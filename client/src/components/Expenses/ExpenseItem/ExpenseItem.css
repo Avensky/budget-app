@@ -36,6 +36,10 @@
     padding: 0.5rem;
     border-radius: 12px;
   }
+
+  .green {
+    background-color: green;
+  }
   
   @media (min-width: 580px) {
     .expense-item__description {
