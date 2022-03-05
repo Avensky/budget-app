@@ -1,30 +1,32 @@
 //==============================================================================
 // set up server================================================================
 //==============================================================================
-// const aws 		         = require('aws-sdk')
-const keys                = require('./config/keys')
-// const rateLimit           = require('express-rate-limit');
-// const helmet              = require('helmet');
-// const mongoSanitize       = require('express-mongo-sanitize');
-// const xss                 = require('xss-clean');
-// const hpp                 = require('hpp');
-const PORT                  = process.env.PORT || 5000;
-const LOCAL                 = "127.0.0.1";
-const bodyParser          = require('body-parser')
-// const compression         = require('compression');
-// const cookieParser        = require('cookie-parser');
-const cors                = require("cors");
-const session             = require('cookie-session')
-const passport            = require('passport')
-const mongoose            = require('mongoose')
-// const multer              = require("multer");
-// const multerS3 		     = require('multer-s3')
-// const s3 		         = new aws.S3({apiVersion: '2006-03-01'});
-// const path                = require("path");
-// const shopController      = require("./controllers/shopController");
-const express               = require('express')
-const app                   = express()
-let server                  = app
+// const aws 		             = require('aws-sdk')
+const keys                      = require('./config/keys')
+// const rateLimit               = require('express-rate-limit');
+// const helmet                  = require('helmet');
+// const mongoSanitize           = require('express-mongo-sanitize');
+// const xss                     = require('xss-clean');
+// const hpp                     = require('hpp');
+const PORT                      = process.env.PORT || 5000;
+const LOCAL                     = "127.0.0.1";
+const bodyParser                = require('body-parser')
+// const compression             = require('compression');
+// const cookieParser            = require('cookie-parser');
+const cors                      = require("cors");
+const session                   = require('cookie-session')
+const passport                  = require('passport')
+const mongoose                  = require('mongoose')
+// const multer                  = require("multer");
+// const multerS3 		         = require('multer-s3')
+// const s3 		             = new aws.S3({apiVersion: '2006-03-01'});
+// const path                    = require("path");
+// const shopController          = require("./controllers/shopController");
+const express                   = require('express')
+const app                       = express()
+let server                      = app
+//const { createProxyMiddleware } = require('http-proxy-middleware');
+//app.use('/api', createProxyMiddleware({ target: 'http://localhost:3000', changeOrigin: true }));
 
 // aws.config.update({
 //     accessKeyId: keys.s3_accessKeyId,
@@ -77,11 +79,8 @@ if (process.env.NODE_ENV !== 'production') {
 //==============================================================================
 // configuration ===============================================================
 //==============================================================================
+require('./models/expense');
 require('./models/users');
-require('./models/blog');
-require('./models/comment');
-// require('./models/orders');
-// require('./models/shop');
 require('./config/passport')(passport); // pass passport for configuration
 
 mongoose.Promise = global.Promise;// connect to our database
@@ -92,10 +91,11 @@ mongoose.connect(keys.mongoURI, {
         .catch(err => console.log('could not connect to mongodb', err))
 module.exports = {mongoose}
 
+
+
 // set up cors to allow us to accept requests from our client
 app.use(cors());
 app.options('*', cors());
-
 
 // Set security HTTP headers
 // app.use(helmet());
@@ -147,11 +147,13 @@ app.use(bodyParser.json({
      verify: (req, res, buf) => { req.rawBody = buf }
 })) 
 
+
+
 //==============================================================================
 // routes ======================================================================
 //==============================================================================
 require('./routes/routes.js')(app, passport); // load our routes and pass in our app and fully configured passport
-require('./routes/blog.js')(app);
+require('./routes/expenses.js')(app);
 // require('./routes/stripe.js')(app, passport); 
 // require('./routes/shop.js')(app);
 // app.post("/api/addImage", upload.any(), shopController.createProduct);

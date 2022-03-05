@@ -10,7 +10,7 @@ module.exports = function (app) {
   app.use(
     ["/api", "/auth", "connect", "/unlink", "/connect", "/webhook"],
     createProxyMiddleware({
-      target: baseUrl,
+      target: "http://localhost:5000",
       changeOrigin: true,
     })
   );

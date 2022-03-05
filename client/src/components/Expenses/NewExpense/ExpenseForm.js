@@ -1,17 +1,24 @@
 import React, { useState } from 'react';
-
+import { connect } from 'react-redux';
+import * as actions from '../../../store/actions/index';
 import './ExpenseForm.css';
 
 const ExpenseForm = (props) => {
-  const [enteredTitle, setEnteredTitle] = useState('');
-  const [enteredAmount, setEnteredAmount] = useState('');
-  const [enteredDate, setEnteredDate] = useState('');
-  const [enteredFrequency, setEnteredFrequency] = useState('');
+
+  const [enteredTitle,      setEnteredTitle]     = useState('');
+  const [enteredAmount,     setEnteredAmount]    = useState('');
+  const [enteredBalance,    setEnteredBalance]   = useState('');
+  const [enteredDate,       setEnteredDate]      = useState('');
+  const [enteredFrequency,  setEnteredFrequency] = useState('');
 
   const titleChangeHandler = (event) => {
     setEnteredTitle(event.target.value);
   };
 
+  const balanceChangeHandler = (event) => {
+    setEnteredBalance(event.target.value);
+  };
+  
   const amountChangeHandler = (event) => {
     setEnteredAmount(event.target.value);
   };
@@ -29,15 +36,17 @@ const ExpenseForm = (props) => {
 
     const expenseData = {
       title: enteredTitle,
+      balance: enteredBalance,
       amount: enteredAmount,
       date: new Date(enteredDate),
       frequency: enteredFrequency
     };
 
-    props.onSaveExpenseData(expenseData);
+    props.newExpense(expenseData);
     setEnteredTitle('');
     setEnteredAmount('');
     setEnteredDate('');
+    setEnteredBalance('');
   };
 
   return (
@@ -49,6 +58,16 @@ const ExpenseForm = (props) => {
             type='text'
             value={enteredTitle}
             onChange={titleChangeHandler}
+          />
+        </div>
+        <div className='new-expense__control'>
+          <label>Balance</label>
+          <input
+            type='number'
+            min='0.01'
+            step='0.01'
+            value={enteredBalance}
+            onChange={balanceChangeHandler}
           />
         </div>
         <div className='new-expense__control'>
@@ -79,19 +98,19 @@ const ExpenseForm = (props) => {
             name='Monthly'
             onChange={frequencyChangeHandler}
           />
-          <label for="html">Monthly</label><br></br>
+          <label htmlFor="html">Monthly</label><br></br>
           <input
             type='radio'
             value='Weekly'
             onChange={frequencyChangeHandler}
           />
-          <label for="html">Weekly</label><br></br>
+          <label htmlFor="html">Weekly</label><br></br>
           <input
             type='radio'
             value='Date'
             onChange={frequencyChangeHandler}
           />
-          <label for="html">Date</label><br></br>
+          <label htmlFor="html">Date</label><br></br>
         </div>
       </div>
       <div className='new-expense__actions'>
@@ -101,4 +120,19 @@ const ExpenseForm = (props) => {
   );
 };
 
-export default ExpenseForm;
+const mapStateToProps = state => {
+  return {
+      expenses      : state.expenses.expenses,
+      error         : state.expenses.error,
+      message       : state.expenses.message,
+      //loading     : state.expenses.loading,
+      //user        : state.auth.payload
+  }
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+      newExpense:  (values) => dispatch( actions.newExpense(values)),
+  }
+}
+export default connect(mapStateToProps, mapDispatchToProps) (ExpenseForm);
